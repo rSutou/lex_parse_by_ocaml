@@ -30,7 +30,7 @@ ocaml コンパイラが必要です。
 5. `dune exec lex_parse` を実行すると, lex_parse/bin/main.ml 内の構文解析のテストケースが実行されます。
 
 操作方法
-LangBuilder は、指定したファイルを読み込み、Lang.mlを生成します。詳細は、LangBuider/bin/sampleLang.lang を判例として参考にしてください。
+LangBuilder は、指定したファイルを読み込み、Lang.mlを生成します。詳細は、LangBuider/bin/sampleLang.lang を凡例として参考にしてください。
 特に、token や mark のラベルは OCaml のバリアントとして扱うために大文字で始まる必要があります。また、引数を持つtokenに場合はデフォルト値も与える必要があります。細かいところは、生成されるLang.mlと比較しながら変更するのが良いと思います。
 
 lex_parse/main.ml 内では、直接main.ml内に書かれた言語モジュールによるテストと、Lang.mlを読みこんだテストが実行されています。
