@@ -1,0 +1,60 @@
+\source
+type exp =
+| BinOp of op * exp * exp
+| Atom of int
+and op =
+| Add
+| Mul
+| Sub
+| Div
+
+
+let rec eval : exp -> int = function
+| Atom n -> n
+| BinOp (Add, e1,e2) -> eval e1 + eval e2
+| BinOp (Mul, e1,e2) -> eval e1 * eval e2
+| BinOp (Sub, e1,e2) -> eval e1 - eval e2
+| BinOp (Div, e1,e2) -> eval e1 / eval e2
+
+\end
+
+
+\token NUM of int
+\token PLUS
+\token MUL
+\token MINUS
+\token DIV
+\token LPAREN
+\token RPAREN
+\eof EOF
+
+
+\lex "+", fun _ -> Some PLUS
+\lex "*", fun _ -> Some MUL
+\lex "-", fun _ -> Some MINUS
+\lex "/", fun _ -> Some DIV
+\lex "(", fun _ -> Some LPAREN
+\lex ")", fun _ -> Some RPAREN
+\lex "[0-9]+", fun s -> Some (NUM (int_of_string s))
+\lex "\\( \\|\t\\|\r\\|\n\\)+", fun _ -> None
+
+
+\start Start of 
+\mark Arith
+\mark Term
+
+\parse start: arith EOF, let Arith exp = $0 in Start exp
+\parse arith: term, let Term exp = $0 in Arith exp
+\parse arith: arith PLUS term, let Term e2 = $2 in let Arith e0 in Arith (BinOp (Plus, e0, e2))
+\parse arith: arith MUL term, let Term e2 = $2 in let Arith e0 in Arith (BinOp (MUL, e0, e2))
+
+\parse term : NUM, let NUM n = $0 in Term
+
+
+:term
+NUM
+term MUL NUM
+term DIV NUM
+LPAREN term RPAREN
+
+

@@ -1,0 +1,64 @@
+\source
+type exp =
+| BinOp of op * exp * exp
+| Atom of int
+and op =
+| Add
+| Mul
+| Sub
+| Div
+
+
+let rec eval : exp -> int = function
+| Atom n -> n
+| BinOp (Add, e1,e2) -> eval e1 + eval e2
+| BinOp (Mul, e1,e2) -> eval e1 * eval e2
+| BinOp (Sub, e1,e2) -> eval e1 - eval e2
+| BinOp (Div, e1,e2) -> eval e1 / eval e2
+
+\end
+
+
+\token NUM of 0:int
+\token PLUS
+\token MUL
+\token MINUS
+\token DIV
+\token LPAREN
+\token RPAREN
+\token EOF
+\eof EOF
+
+
+\lex "\\+", fun _ -> Some PLUS
+\lex "\\*", fun _ -> Some MUL
+\lex "-", fun _ -> Some MINUS
+\lex "/", fun _ -> Some DIV
+\lex "(", fun _ -> Some LPAREN
+\lex ")", fun _ -> Some RPAREN
+\lex "[0-9]+", fun s -> Some (NUM (int_of_string s))
+\lex "\\( \\|\t\\|\r\\|\n\\)+", fun _ -> None
+
+
+\mark Start of exp
+\mark Arith of exp
+\mark Term of exp
+\mark Atomic of exp
+\start Start
+
+
+
+\parse Atomic :NUM: Atom ($0)
+\parse Atomic :LPAREN Arith RPAREN: $1
+
+\parse Term :Atomic: $0
+\parse Term :Term MUL Atomic: BinOp (Mul, $0, $2)
+\parse Term :Term DIV Atomic: BinOp (Div, $0, $2)
+
+\parse Arith:Term: $0
+\parse Arith:Arith PLUS Term: (BinOp (Add, $0, $2))
+\parse Arith:Arith MINUS Term: (BinOp (Sub, $0, $2))
+
+\parse Start:Arith EOF: $0
+
+

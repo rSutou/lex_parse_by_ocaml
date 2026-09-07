@@ -1,0 +1,6 @@
+(executable
+ (public_name LangBuilder)
+ (name main)
+ (libraries LangBuilder)
+ (modules metaLang main)
+)
