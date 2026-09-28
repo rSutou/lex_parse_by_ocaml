@@ -1,4 +1,0 @@
-(lang dune 3.22)
-(name LangBuilder)
-(sections (lib .) (bin ../../bin))
-(files (lib (META dune-package opam)) (bin (LangBuilder)))
